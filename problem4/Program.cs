@@ -1,9 +1,13 @@
-﻿namespace projecteuler4;
+﻿using System.Diagnostics;
+
+namespace problem4;
 
 public static class Program
 {
     public static void Main()
     {
+        var stopWatch = new Stopwatch();
+        
         while (true)
         {
             Console.WriteLine("Enter number of digits in a number to check for a palindrome: ");
@@ -16,12 +20,15 @@ public static class Program
             }
 
             var intParsed = int.TryParse(input, out int digits);
-            if (!intParsed)
+            if (!intParsed || digits <= 1)
             {
                 continue;
             }
-
+            
+            stopWatch.Start();
             var productFound = TryGetLargestPalindromeProduct(digits, out PalindromeProduct? palindromeProduct);
+            stopWatch.Stop();
+            
             if (productFound)
             {
                 Console.WriteLine("The largest palindrome found was " + palindromeProduct?.Number + " made up of " + palindromeProduct?.Product1 + " x " + palindromeProduct?.Product2);
@@ -30,6 +37,9 @@ public static class Program
             {
                 Console.WriteLine("No palindrome found from products.");
             }
+
+            Console.WriteLine("Calculation time: " + stopWatch.Elapsed);
+            stopWatch.Reset();
         }
     }
     
@@ -37,11 +47,10 @@ public static class Program
     {
         largestPalindromeProduct = null;
         
-        var largestPotentialProduct = int.Parse(new string('9', digits));
-        var largestDisallowedProduct = int.Parse(new string('9', digits - 1));
+        int largestPotentialProduct = int.Parse(new string('9', digits));
+        int largestDisallowedProduct = int.Parse(new string('9', digits - 1));
     
-        int foundPalindromeProductIndex = 0;
-        PalindromeProduct[] foundPalindromeProducts = [];
+        var foundPalindromeProducts = new List<PalindromeProduct>();
         
         for (int i = largestPotentialProduct; i > largestDisallowedProduct; i--)
         {
@@ -51,24 +60,23 @@ public static class Program
                 
                 if (IsPalindrome(sampledProduct))
                 {
-                    foundPalindromeProducts[foundPalindromeProductIndex] = new PalindromeProduct(sampledProduct, j, i);
-                    foundPalindromeProductIndex++;
+                    foundPalindromeProducts.Add(new PalindromeProduct(sampledProduct, j, i));
                 }
             }
         }
         
-        if (foundPalindromeProducts.Length == 0)
+        var largestFoundPalindromeProduct = foundPalindromeProducts.FirstOrDefault();
+        if (foundPalindromeProducts.Count == 0 || largestFoundPalindromeProduct == null)
         {
             return false;
         }
-    
+        
         // aggregate check
-        var largestFoundPalindromeProduct = foundPalindromeProducts[0];
-        for (int i = 1; i < foundPalindromeProducts.Length; i++)
+        foreach (var palindromeProduct in foundPalindromeProducts)
         {
-            if (foundPalindromeProducts[i].Number > largestFoundPalindromeProduct.Number)
+            if (palindromeProduct.Number > largestFoundPalindromeProduct.Number)
             {
-                largestFoundPalindromeProduct = foundPalindromeProducts[i];
+                largestFoundPalindromeProduct = palindromeProduct;
             }
         }
     
