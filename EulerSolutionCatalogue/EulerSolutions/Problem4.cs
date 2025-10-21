@@ -1,13 +1,16 @@
-﻿using System.Diagnostics;
+﻿namespace ProjectEuler.EulerSolutions;
 
-namespace problem4;
-
-public static class Program
+public class Problem4 : IEulerSolution
 {
-    public static void Main()
+    public string Name => "Problem 4";
+
+    public string Description =>
+        "This program will find the largest product that produces a palindrome from a given input. " +
+        "The input will be an integer that will represent the number of digits in both factors. " +
+        "For example, given the input value of 2 the result will be 9009 which is the product of 91 x 99, each factor consisting of 2 digits.";
+
+    public void Run()
     {
-        var stopWatch = new Stopwatch();
-        
         while (true)
         {
             Console.WriteLine("Enter number of digits in a number to check for a palindrome: ");
@@ -15,8 +18,7 @@ public static class Program
             var input = Console.ReadLine();
             if (input == "exit")
             {
-                Environment.Exit(0);
-                break;
+                return;
             }
 
             var intParsed = int.TryParse(input, out int digits);
@@ -25,9 +27,7 @@ public static class Program
                 continue;
             }
             
-            stopWatch.Start();
             var productFound = TryGetLargestPalindromeProduct(digits, out PalindromeProduct? palindromeProduct);
-            stopWatch.Stop();
             
             if (productFound)
             {
@@ -37,9 +37,6 @@ public static class Program
             {
                 Console.WriteLine("No palindrome found from products.");
             }
-
-            Console.WriteLine("Calculation time: " + stopWatch.Elapsed);
-            stopWatch.Reset();
         }
     }
     

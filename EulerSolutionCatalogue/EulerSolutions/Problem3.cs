@@ -1,20 +1,22 @@
-﻿namespace problem3;
+﻿namespace ProjectEuler.EulerSolutions;
 
-public static class Program 
+public class Problem3 : IEulerSolution
 {
-    public static void Main()
+    public string Name => "Problem 3";
+    public string Description => "This program will attempt to find the largest prime factor for a given integer input.";
+    
+    public void Run()
     {
         while (true)
         {
             Console.WriteLine("Enter a number: ");
+            
             var input = Console.ReadLine();
-
             if (input == "exit")
             {
-                Environment.Exit(0);
-                break;
+                return;
             }
-    
+
             var intParsed = ulong.TryParse(input, out var number);
             if (intParsed)
             {
@@ -26,8 +28,9 @@ public static class Program
             }
         }
     }
-    
-    private static ulong GetPrimeFactor(ulong number)
+
+    // super inefficient, rewrite in the future sometime
+    private ulong GetPrimeFactor(ulong number)
     {
         uint min = 2;
         uint max = (uint)Math.Ceiling(Math.Sqrt(number));
