@@ -1,4 +1,4 @@
-namespace ProjectEuler.EulerSolutions;
+namespace ProjectEuler;
 
 public interface IEulerSolution
 {
